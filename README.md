@@ -1,2 +1,2 @@
 # Tubx
-Terminal console experiments for qubx
+Terminal application for Qubx platform

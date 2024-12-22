@@ -1,0 +1,139 @@
+[tool.poetry]
+name = "tubx"
+version = "0.0.1"
+description = "Terminal Qubx application"
+authors = [
+  "Dmitry Marienko <dmitry@gmail.com>",
+]
+readme = "README.md"
+packages = [{ include = "tubx", from = "src" }]
+repository = "https://github.com/dmarienko/tubx"
+include = [
+  # Compiled extensions must be included in the wheel distributions
+  { path = "src/**/*.so", format = "wheel" },
+  { path = "src/**/*.pyd", format = "wheel" },
+]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+pytest = { extras = ["lazyfixture"], version = "^7.2.0" }
+Qubx = "^0.5.1"
+numpy = "^1.26.3"
+loguru = "^0.7.2"
+stackprinter = "^0.2.10"
+pandas = "^2.2.2"
+numba = "^0.59.1"
+scikit-learn = "^1.4.2"
+pydantic-settings = "^2.4.0"
+python-dotenv = "^1.0.1"
+python-crontab = "^3.2.0"
+click = "^8.1.7"
+rust-just = "^1.36.0"
+python-semantic-release = "^9.15.1"
+toml = "^0.10.2"
+rich-click = "^1.6.0"
+txl = "0.2.20"
+txl_cell = "0.2.15"
+txl_console = "0.2.17"
+txl_editors = "0.2.14"
+txl_file_browser = "0.2.14"
+#txl_image_viewer = "0.2.14"
+#txl_jpterm = "0.2.15"
+txl_kernel = "0.2.15"
+txl_local_contents = "0.2.15"
+txl_local_terminals = "0.2.14"
+txl_local_kernels = "0.2.14"
+txl_notebook_editor = "0.2.15"
+txl_remote_contents = "0.2.15"
+txl_remote_terminals = "0.2.14"
+txl_remote_kernels = "0.2.15"
+txl_text_editor = "0.2.14"
+txl_markdown_viewer = "0.2.14"
+txl_terminal = "0.2.14"
+txl_launcher = "0.2.14"
+txl_widgets = "0.2.16"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^4.0.1"
+pytest = "^7.1.3"
+rust-just = "^1.36.0"
+twine = "^5.1.1"
+
+#[build-system]
+#requires = ["poetry-core", "setuptools", "numpy>=1.26.3", "cython==3.0.8", "toml>=0.10.2"]
+#build-backend = "poetry.core.masonry.api"
+
+#[tool.poetry.build]
+#script = "build.py"
+#generate-setup-file = false
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.1.3"
+pytest-mock = "*"
+
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+
+[tool.poetry.scripts]
+tubx = "tubx.cli:main"
+
+# # # # # # # # # # # #  SEMANTIC_RELEASE  # # # # # # # # # # # #
+[tool.semantic_release.branches.master]
+match = "main"
+prerelease = false
+
+[tool.semantic_release.branches.develop]
+match = "dev"
+prerelease = true
+prerelease_token = "dev"
+
+[tool.semantic_release]
+major_on_zero = true
+#branch = ["main", "dev"]
+upload_to_PyPI = false
+upload_to_release = false
+version_toml = ["pyproject.toml:tool.poetry.version"]
+build_command = "poetry build"
+
+[tool.semantic_release.remote]
+ignore_token_for_push = true
+
+[tool.semantic_release.commit_parser_options]
+allowed_tags = [
+  "build",
+  "chore",
+  "ci",
+  "docs",
+  "feat",
+  "fix",
+  "perf",
+  "style",
+  "refactor",
+  "test",
+]
+minor_tags = ["feat"]
+patch_tags = ["fix", "perf", "chore", "refactor", "test"]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+[tool.ruff.lint]
+
+select = [
+  # pycodestyle
+  "E",
+  # Pyflakes
+  "F",
+  # pyupgrade
+  # "UP",
+  # flake8-bugbear
+  # "B",
+  # flake8-simplify
+  # "SIM",
+  # isort
+  "I",
+]
+
+[tool.ruff]
+line-length = 120

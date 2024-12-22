@@ -1,0 +1,30 @@
+Screen {
+    &:inline {
+        height: 50vh;
+    }
+}
+
+#tree-view {
+    display: none;
+    scrollbar-gutter: auto;
+    overflow: auto;
+    width: 30%;
+    height: 100%;
+    dock: left;
+}
+
+QubixTerminal.-show-tree #tree-view {
+    display: block;
+    max-width: 50%;
+}
+
+
+#main-view {
+    overflow: auto scroll;
+    min-width: 100%;
+    hatch: "." blue 1%;
+}
+
+#main {
+    width: auto;
+}
