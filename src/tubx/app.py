@@ -4,6 +4,8 @@ from pathlib import Path
 
 # from asphalt.core import CLIApplicationComponent, Context
 # from asphalt.core.cli import run as asphalt_run
+import numpy as np
+import pandas as pd
 from qubx import lookup
 from qubx.utils.misc import version
 
@@ -15,6 +17,7 @@ from textual.containers import Container, Horizontal, HorizontalGroup, VerticalS
 from textual.reactive import reactive, var
 from textual.widgets import Button, DirectoryTree, Footer, Header, Input, Label, Static, Tree
 from textual.widgets.tree import TreeNode
+from textual_plotext import PlotextPlot
 
 from tubx.ui.instruments import InstrumentsTree
 
@@ -41,6 +44,7 @@ class QubixTerminal(App):
         with Container():
             yield InstrumentsTree("BINANCE.UM", base_currency="USDT", id="tree-view")
             with VerticalScroll(id="main-view"):
+                yield PlotextPlot(id="chart")
                 yield Static(id="main", expand=True)
             with HorizontalGroup():
                 yield Button("Read symbols")
@@ -72,11 +76,45 @@ class QubixTerminal(App):
         i_tree = i_tree.focus()
         i_tree.load()
 
+        chart_view = self.query_one("#chart", PlotextPlot)
+        chart_view.plt.title("Price")
+        chart_view.plt.xlabel("Time")
+        chart_view.plt.date_form("Y-m-d H:M")
+
     async def on_instruments_tree_instrument_selected(self, event: InstrumentsTree.InstrumentSelected) -> None:
         """Called when the user click a file in the directory tree."""
         event.stop()
         main_view = self.query_one("#main-view")
         await main_view.mount(Label(str(event.entry.instrument)))
+        chart_view = self.query_one("#chart", PlotextPlot)
+
+        chart_view.plt.clear_data()
+        # chart_view.plt.plot(
+        #     list(
+        #         map(
+        #             lambda x: pd.Timestamp(x).strftime("%Y-%m-%d %H:%M"),
+        #             pd.date_range("2021-01-01", periods=100, freq="1d").values,
+        #         )
+        #     ),
+        #     (100 + np.random.randn(100).cumsum()).tolist(),
+        #     marker="braille",
+        # )
+        c = 100 + np.random.randn(100).cumsum()
+        chart_view.plt.candlestick(
+            list(
+                map(
+                    lambda x: pd.Timestamp(x).strftime("%Y-%m-%d %H:%M"),
+                    pd.date_range("2021-01-01", periods=100, freq="1d").values,
+                )
+            ),
+            {
+                "Open": (c + 0.5).tolist(),
+                "High": (c + 1).tolist(),
+                "Low": (c - 1).tolist(),
+                "Close": c.tolist(),
+            },
+        )
+        chart_view.plt.title(str(event.entry.instrument))
 
     def watch_path(self, path: str | None) -> None:
         """Called when path changes."""
